@@ -1,0 +1,73 @@
+---
+title: "Lab 8"
+author: "Josh Rowe"
+format: 
+  html: 
+    self-contained: TRUE
+editor: visual
+---
+
+```{r}
+
+library(ggplot2)
+library(jasmines)
+library(tidyverse)
+library(ggnewscale)    
+
+```
+
+## Generative Art
+
+### Cosmos
+
+```{r}
+
+use_seed(8) |>
+	entity_circle(grain = 150, shape = 1) |> 
+	unfold_loop(points = 3, radius = 1) |>
+  style_ribbon(background = "darkblue", palette = 'lajolla')
+
+
+```
+
+### Museum Description
+
+Inspired by binary star systems, "cosmos" is a commentary on the inteconnectedness of all things. One might look at it and see two circles connected by lines, but it is hard not to see the artwork as a three-dimensional ring which is semi-opaque, facing in/out of the page. Just as two stars orbit around each-other in a constant tug-of-war with each-other's gravity, these two circles create a ring with each-other which almost makes them appear more as one solid entity than as two distinced objects.
+
+
+### Coding Description
+
+The code above uses entity_circle() to generate the xy points of a perfect circle. The circle is then plotted using unfold_loop() with the points argument set to 3 because this duplicates the circle, placing it at two distinct places equidistant from the center of the frame along the x-axis. Setting the radius equal to one makes the distance from the center of the drawing to the center of each circle equal to the diameter of each circle. The "lajolla" color palette was chosen for its vibrant sandstone/red colors, and as a nod to the fact that I'll be moving to San Diego next year! :)
+
+
+## Art From Data
+
+```{r}
+
+ggplot(data = iris, mapping = aes(x = Sepal.Length, y = Petal.Length, 
+                                  color = Petal.Width)) + 
+  geom_point() + 
+  coord_polar(theta = 'x') + 
+  theme_void() + 
+  theme(legend.position = 'none') +
+  scale_color_binned(type = 'gradient') + 
+  new_scale_color() + 
+  geom_smooth(mapping = aes(x = Petal.Length , y = Sepal.Length, color = ..y..), 
+              se = FALSE) + 
+  scale_color_gradient2(low = "darkblue", mid = "darkgreen" , high = "lightblue", 
+                         midpoint = median(iris$Petal.Length)) + 
+  labs(title = "nautilus") + 
+  theme(plot.title = element_text(hjust = 0.5, size = 25, face = "bold"))
+  
+
+
+```
+
+### Museum Description
+
+"nautilus" calls attention to the natural beauty and imperfections of nature. Showing two not-quite fibonacci spirals, it resembles the shell of a nautilus (the type of marine cephalopod). While the outside of the shell is a smoothed line, the inside edge is made up of dots which spread out from the spiral pattern, imperfectly mirroring the outer spiral. This represents the fact that we, as human observers, see smooth perfection in nature, when nature is really anything but perfect. The work calls attention to the fact that regardless of whether what we see in nature is perfectly manicured or a little messy, it is all equally beautiful.
+
+
+### Coding Description
+
+"nautilus" uses the iris dataset, and draws two spirals using polar coordinates. The inside spiral is drawn with Sepal.Length being the theta axis and Petal.Length being the r axis, and the outside spiral was drawn with these axes reversed. This made the outside spiral encompass the inner one to form a similar, but slightly different spiral. By using geom_point() for the inside spiral every datapoint was shown, giving the inside spiral a more nebulous look, while the outside spiral was drawn with geom_smooth() which removed information from the spiral itself, condensing it into a single "best fit" line. Scale_color_gradient2() was used to color the outside spiral with a colorbar which went from dark blue to light blue with a dark green midpoint.
